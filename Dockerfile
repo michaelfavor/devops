@@ -8,4 +8,6 @@ RUN apt-get update && apt-get install -y \
     gimp \
     vlc \
     libreoffice \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && mkdir -p /run/sshd
