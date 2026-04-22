@@ -1,54 +1,71 @@
+# syntax=docker/dockerfile:1
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
-ARG USERNAME=ubuntu
-ARG PASSWORD=ubuntu
-ARG USER_UID=1000
-ARG USER_GID=1000
 
+# =============================================================================
+# BASE LAYER - Packages that rarely change (cached)
+# =============================================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates wget gnupg2 apt-transport-https \
     dbus-x11 x11-xserver-utils xserver-xorg-core xserver-xorg-video-dummy xinit \
-    kde-plasma-desktop sddm \
+    xfce4 xfce4-goodies \
     xrdp \
     openssh-server \
     supervisor \
     pulseaudio \
     xdg-utils \
-    icewm \
+    libgl1 \
+    libxkbcommon0 \
+    libxkbcommon-x11-0 \
+    libxcb-xinerama0 \
+    libxcb-cursor0 \
+    libxcb-icccm4 \
+    libxcb-image0 \
+    libxcb-keysyms1 \
+    libxcb-randr0 \
+    libxcb-render-util0 \
+    libxcb-shape0 \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
-# SET PASSWORD FOR UBUNTU USER (EXISTS IN UBUNTU 24.04)
-RUN echo "ubuntu:ubuntu" | chpasswd; \
-    mkdir -p /var/run/sshd /home/ubuntu/.ssh; \
+# =============================================================================
+# USER CONFIGURATION - rarely changes
+# =============================================================================
+RUN echo "ubuntu:ubuntu" | chpasswd && \
+    mkdir -p /var/run/sshd /home/ubuntu/.ssh && \
     chown -R ubuntu:ubuntu /home/ubuntu
 
-RUN mkdir -p /etc/X11/xorg.conf.d
-RUN printf '%s\n' \
-'Section "Device"' \
-'  Identifier  "DummyDevice"' \
-'  Driver      "dummy"' \
-'  VideoRam    256000' \
-'EndSection' \
-'' \
-'Section "Monitor"' \
-'  Identifier "DummyMonitor"' \
-'  HorizSync 31.5-48.5' \
-'  VertRefresh 50-70' \
-'EndSection' \
-'' \
-'Section "Screen"' \
-'  Identifier "DummyScreen"' \
-'  Device "DummyDevice"' \
-'  Monitor "DummyMonitor"' \
-'  DefaultDepth 24' \
-'  SubSection "Display"' \
-'    Depth 24' \
-'    Modes "1920x1080"' \
-'  EndSubSection' \
-'EndSection' \
-> /etc/X11/xorg.conf.d/10-dummy.conf
+# =============================================================================
+# X11 CONFIGURATION - rarely changes
+# =============================================================================
+RUN mkdir -p /etc/X11/xorg.conf.d && \
+    printf '%s\n' \
+    'Section "Device"' \
+    '  Identifier  "DummyDevice"' \
+    '  Driver      "dummy"' \
+    '  VideoRam    256000' \
+    'EndSection' \
+    '' \
+    'Section "Monitor"' \
+    '  Identifier "DummyMonitor"' \
+    '  HorizSync 31.5-48.5' \
+    '  VertRefresh 50-70' \
+    'EndSection' \
+    '' \
+    'Section "Screen"' \
+    '  Identifier "DummyScreen"' \
+    '  Device "DummyDevice"' \
+    '  Monitor "DummyMonitor"' \
+    '  DefaultDepth 24' \
+    '  SubSection "Display"' \
+    '    Depth 24' \
+    '    Modes "1920x1080"' \
+    '  EndSubSection' \
+    'EndSection' \
+    > /etc/X11/xorg.conf.d/10-dummy.conf
 
+# =============================================================================
+# xRDP CONFIGURATION
+# =============================================================================
 RUN sed -i 's/^address=127.0.0.1/address=0.0.0.0/' /etc/xrdp/xrdp.ini || true
 
 RUN cat > /etc/xrdp/xorg.conf << 'XORGCONF'
@@ -115,6 +132,9 @@ Section "Screen"
 EndSection
 XORGCONF
 
+# =============================================================================
+# SESSION STARTUP SCRIPT - THIS IS WHAT WE CHANGE MOST DURING DEVELOPMENT
+# =============================================================================
 RUN cat > /etc/xrdp/startwm.sh << 'WMSCRIPT'
 #!/bin/sh
 exec > /tmp/startwm.log 2>&1
@@ -123,27 +143,24 @@ USER=ubuntu
 HOME=/home/ubuntu
 export USER LOGNAME HOME
 export HOME
-export XDG_RUNTIME_DIR=/run/user/1000
+export XDG_RUNTIME_DIR=/tmp/runtime-1000
 mkdir -p "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR"
 chown ubuntu:ubuntu "$XDG_RUNTIME_DIR"
-export XDG_CURRENT_DESKTOP=KDE
+export XDG_CURRENT_DESKTOP=xfce
 export XDG_SESSION_TYPE=x11
-export KDE_FULL_SESSION=true
-export KDE_SESSION_VERSION=5
-export QT_QPA_PLATFORM=offscreen
-export KINI_MAX_LINEAR_ALLOC_SIZE=2097152
 . /etc/profile
 if [ -f "$HOME/.xsession" ]; then
     . "$HOME/.xsession"
-elif [ -f /usr/bin/startplasma-x11 ]; then
-    dbus-daemon --session --fork --print-address || true
-    sleep 1
-    exec /usr/bin/startplasma-x11
+elif which startxfce4 >/dev/null 2>&1; then
+    dbus-launch --exit-with-session startxfce4
 fi
 WMSCRIPT
 RUN chmod +x /etc/xrdp/startwm.sh
 
+# =============================================================================
+# FINAL CONFIG
+# =============================================================================
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 3389 22
