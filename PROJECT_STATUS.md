@@ -1,45 +1,26 @@
-# Docker Desktop Environment - Project Status
+# Docker KDE Desktop - Project Status
 
 ## Working Solution
 
-Use the pre-built linuxserver.io webtop image - it's proven and works reliably.
+Custom image based on `linuxserver/rdesktop:ubuntu-kde` with additional software.
 
-## Quick Start
+## Build & Run
 
 ```bash
-docker run -d --name kde-vm -p 3000:3000 -p 2222:22 lscr.io/linuxserver/webtop:debian-kde
+docker compose up -d --build
 ```
 
 ## Access
 
-- **Browser:** http://localhost:3000
-- **Login:** abc / abc
-- **SSH:** ssh -p 2222 abc@localhost (password: abc)
-
-## Debug
-
-```bash
-# Check logs
-docker logs kde-vm
-
-# Check processes
-docker exec kde-vm ps aux
-
-# Shell access
-docker exec -it kde-vm /bin/bash
-```
+- **RDP:** Connect via RDP client to `localhost:3389`
+- **Credentials:** linuxserver.io / linuxserver.io
 
 ## Files
 
-- `Dockerfile` - custom build (complex, not working reliably)
-- `startkde.sh` - startup script
-- `supervisord.conf` - service config
-- `PROJECT_STATUS.md` - this file
+- `Dockerfile` - Custom build with additional packages
+- `docker-compose.yml` - Container configuration
+- `run-kde.sh` - Quick start script
 
-## Notes
+## Adding Software
 
-The pre-built image uses:
-- Xvfb with proper extensions (+iglx, +render, etc.)
-- Selkies WebRTC-based streaming for browser access
-- nginx on port 3000 for the web interface
-- Browser-based noVNC (no client needed)
+Edit `Dockerfile` and add packages to the apt install line. Rebuild to apply.

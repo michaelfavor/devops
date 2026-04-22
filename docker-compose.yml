@@ -1,0 +1,17 @@
+services:
+  kde-vm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kde-vm
+    hostname: kde-vm
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    ports:
+      - "3389:3389"
+      - "2222:22"
+    volumes:
+      - ./data:/config
+    restart: unless-stopped
