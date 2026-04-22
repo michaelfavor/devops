@@ -147,13 +147,19 @@ export XDG_RUNTIME_DIR=/tmp/runtime-1000
 mkdir -p "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR"
 chown ubuntu:ubuntu "$XDG_RUNTIME_DIR"
-export XDG_CURRENT_DESKTOP=xfce
-export XDG_SESSION_TYPE=x11
 . /etc/profile
 if [ -f "$HOME/.xsession" ]; then
     . "$HOME/.xsession"
-elif which startxfce4 >/dev/null 2>&1; then
-    dbus-launch --exit-with-session startxfce4
+elif which icewm >/dev/null 2>&1; then
+    # icewm is simple - just exec it
+    exec icewm
+else
+    # fallback to xfce
+    export XDG_CURRENT_DESKTOP=xfce
+    export XDG_SESSION_TYPE=x11
+    if which startxfce4 >/dev/null 2>&1; then
+        dbus-launch --exit-with-session startxfce4
+    fi
 fi
 WMSCRIPT
 RUN chmod +x /etc/xrdp/startwm.sh
