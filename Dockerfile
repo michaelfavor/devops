@@ -5,14 +5,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates wget gnupg2 \
     dbus-x11 xserver-xorg-video-dummy \
-    kde-plasma-desktop plasma-desktop \
-    plasma-workspace \
-    kwin-x11 \
-    pulseaudio \
-    tigervnc-standalone-server \
+    kde-plasma-desktop plasma-desktop plasma-workspace kwin-x11 \
+    pulseaudio xvfb websockify python3-novnc x11vnc \
     openssh-server \
     supervisor \
     xdg-utils \
+    nginx \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "ubuntu:ubuntu" | chpasswd && \
@@ -50,5 +48,5 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY startkde.sh /startkde.sh
 RUN chmod +x /startkde.sh
 
-EXPOSE 5900 22
+EXPOSE 6080 22
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
