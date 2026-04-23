@@ -1,3 +1,5 @@
 #!/bin/bash
-docker build -t ubuntu2404-kde-rdp --build-arg USERNAME=devuser --build-arg PASSWORD=devpass .
+docker stop kde-vm
+docker rm kde-vm
+docker-compose up -d --build
 
