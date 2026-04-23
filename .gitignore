@@ -1,4 +1,5 @@
 _archive/
+data/.cache/
 data/.local/share/
 data/.XDG/pulse/pid
 data/.xorgxrdp.10.log
