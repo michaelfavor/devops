@@ -59,32 +59,32 @@ LastModified=1706970069
 NaturalSize_1=16,16
 
 [/usr/share/icons/breeze/apps/16/preferences-system.svg]
-Invalidelements=1108833411,582145929,1144646575,2551901772
+Invalidelements=2551901772,1144646575,2767140637,1108833411,582145929
 LastModified=1706970069
 NaturalSize_1=16,16
 
 [/usr/share/icons/breeze/apps/16/system-file-manager.svg]
-Invalidelements=1998086619,1894064495,3387743132,667342693
+Invalidelements=1998086619,3387743132,1509362808,1894064495,667342693
 LastModified=1706970069
 NaturalSize_1=16,16
 
 [/usr/share/icons/breeze/apps/16/utilities-terminal.svg]
-Invalidelements=4138138631,3394340637,1874871121,100361369
+Invalidelements=4138138631,3394340637,100361369,4051676074,1874871121
 LastModified=1706970069
 NaturalSize_1=16,16
 
 [/usr/share/icons/breeze/apps/32/preferences-system.svg]
-Invalidelements=2771800540,1345608477,368878454,1307686489,3079669251,2114825692
+Invalidelements=1345608477,4183023757,2114825692,3079669251,2771800540,368878454,1307686489
 LastModified=1706970069
 NaturalSize_1=32,32
 
 [/usr/share/icons/breeze/apps/32/system-file-manager.svg]
-Invalidelements=2996684046,326258393,1933839294,3791314428,2706586959
+Invalidelements=1933839294,326258393,3791314428,2744824838,2996684046,2706586959
 LastModified=1706970069
 NaturalSize_1=32,32
 
 [/usr/share/icons/breeze/apps/32/utilities-terminal.svg]
-Invalidelements=1139581228,1270955883,1333328107,3895129354,1183895000
+Invalidelements=3895129354,1139581228,1270955883,3742908678,1183895000,1333328107
 LastModified=1706970069
 NaturalSize_1=32,32
 
@@ -169,7 +169,7 @@ LastModified=1706970069
 NaturalSize_1=64,64
 
 [/usr/share/icons/breeze/preferences/32/preferences-system-time.svg]
-Invalidelements=2199373184,926038100,3169154698
+Invalidelements=926038100,3169154698,1036429694,2199373184
 LastModified=1706970069
 NaturalSize_1=32,32
 

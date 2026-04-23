@@ -13,3 +13,4 @@ ss -tlnp | grep sshd
 cat /etc/ssh/ssh_config | grep -E '^Port|^#Port'
 /usr/bin/sshd
 which sshd
+exit
