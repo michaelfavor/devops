@@ -11,14 +11,18 @@ RUN apt-get update && apt-get install -y \
     libreoffice \
     openssh-server
 
+RUN apt-get install -y \
+    iproute2 \
+    nano \
+    strace
+
 # Clean up Temp files
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Setup SSH Server
-RUN ssh-keygen -A \
-    && mkdir -p /run/sshd \
+RUN mkdir -p /run/sshd \
     && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config
 
 # Copy s6-overlay service for sshd
-COPY root/ /
+COPY root_data/ /

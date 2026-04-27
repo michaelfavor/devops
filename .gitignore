@@ -1,7 +1,9 @@
 _archive/
-data/.config/
-data/.cache/
-data/.local/share/
-data/.XDG/pulse/pid
-data/.xorgxrdp.10.log
+home_volume/.local/share/
+home_volume/.XDG/pulse/pid
+home_volume/.xorgxrdp.10.log
+home_volume/.cache/
+home_volume/.config/
+home_volume/Desktop
+home_volume/.bash_history
 
