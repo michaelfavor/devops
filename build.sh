@@ -1,5 +1,5 @@
 #!/bin/bash
-docker stop kde-vm
-docker rm kde-vm
+docker stop devops
+docker rm devops
 docker-compose up -d --build
 

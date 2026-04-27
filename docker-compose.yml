@@ -3,15 +3,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: kde-vm
-    hostname: kde-vm
+    container_name: devops
+    hostname: devops
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=America/Los_Angeles
     ports:
       - "3389:3389"
       - "2222:22"
     volumes:
-      - ./data:/config
+      - ./home:/config
     restart: unless-stopped

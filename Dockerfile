@@ -9,9 +9,13 @@ RUN apt-get update && apt-get install -y \
     gimp \
     vlc \
     libreoffice \
-    openssh-server \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && ssh-keygen -A \
+    openssh-server
+
+# Clean up Temp files
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Setup SSH Server
+RUN ssh-keygen -A \
     && mkdir -p /run/sshd \
     && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config
