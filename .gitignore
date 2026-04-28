@@ -6,4 +6,7 @@ home_volume/.cache/
 home_volume/.config/
 home_volume/Desktop
 home_volume/.bash_history
-
+home_volume/.sudo_as_admin_successful
+home_volume/.xorgxrdp.10.log.old
+home_volume/.ssh/known_hosts
+home_volume/.ssh/known_hosts.old
