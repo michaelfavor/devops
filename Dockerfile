@@ -122,7 +122,7 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
 # =============================================================================
 # INSTALL LATEST NODE.JS (via NodeSource - gets Node 20 LTS)
 # =============================================================================
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g yarn pnpm && \
     rm -rf /var/lib/apt/lists/*
@@ -130,12 +130,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 # =============================================================================
 # INSTALL CODING AGENTS
 # =============================================================================
+# kilocode
 RUN npm install -g kilocode
 # opencode
 #RUN go install github.com/opencode-ai/opencode@latest
 RUN npm install -g opencode-ai
 # qwencode
 RUN npm install -g @qwen-code/qwen-code@latest
+# pi.dev
+RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
 # =============================================================================
 # CONFIGURE DESKTOP ENVIRONMENT
