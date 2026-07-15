@@ -10,6 +10,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     ports:
+      - "5000:5000"
       - "7700:7700"
       - "7770:7770"
       - "7800:7800"

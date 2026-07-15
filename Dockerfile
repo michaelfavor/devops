@@ -5,7 +5,9 @@
 # 
 # Port 3389: RDP Remote GUI Desktop
 # Port 2222: SSH Secure Shell Terminal
-# Login user/pass: abc / abc (change with passwd)
+#
+# IMPORTANT Login credentials username: abc  password: abc (change with passwd)
+#
 # =============================================================================
 
 FROM lscr.io/linuxserver/rdesktop:ubuntu-kde
@@ -19,7 +21,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Switch to root for system installation
 USER root
 
-# Restore packages normally needed by users who log in
+# Restores many standard packages needed by users who log in.  By default these
+# packages are omitted from the rdesktop:ubuntu-kde to minimize container size
 RUN yes | /usr/bin/unminimize
 
 # =============================================================================
@@ -29,6 +32,7 @@ RUN yes | /usr/bin/unminimize
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     # System utilities
+    gpg \
     htop \
     lsof \
     less \
@@ -43,18 +47,13 @@ RUN apt-get update && apt-get upgrade -y && \
     # Network essentials
     avahi-utils \
     avahi-daemon \
+    ca-certificates \
     dnsmasq \
     iproute2 \
     iputils-ping \
     net-tools \
     openssh-server \
     strace \
-    # VS Code dependencies
-    libnss3 \
-    libgtk-3-0 \
-    libgbm1 \
-    libasound2t64 \
-    libsecret-1-0 \
     # Build essentials
     build-essential \
     curl \
@@ -63,11 +62,15 @@ RUN apt-get update && apt-get upgrade -y && \
     git-lfs \
     golang-go \
     ssh \
+    libnccl2 \
+    libnccl-dev \
+    libnss-mdns \
     # Python ecosystem
     python3 \
     python3-pip \
     python3-venv \
     python-is-python3 \
+    pipx \
     # Node.js ecosystem
     nodejs \
     npm \
@@ -79,16 +82,18 @@ RUN apt-get update && apt-get upgrade -y && \
     libgbm1 \
     libasound2t64 \
     libsecret-1-0 \
-    # GUI apps for testing
+    # GUI apps
     chromium-browser \
     firefox \
+    fonts-liberation \
+    fonts-liberation-sans-narrow \
     gimp \
     libreoffice \
     vlc \
-    xterm \
-    # Misc
-    libnss-mdns
+    xterm
 
+#RUN apt-get install -y --no-install-recommends \
+    # google-chrome-stable \
 
 # =============================================================================
 # Setup SSH Server
@@ -127,6 +132,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     npm install -g yarn pnpm && \
     rm -rf /var/lib/apt/lists/*
 
+
+# =============================================================================
+# INSTALL HUGGINGFACE TOOLS
+# =============================================================================
+RUN pipx install huggingface-hub
+RUN pipx inject huggingface-hub hf_transfer
+
 # =============================================================================
 # INSTALL CODING AGENTS
 # =============================================================================
@@ -139,6 +151,8 @@ RUN npm install -g opencode-ai
 RUN npm install -g @qwen-code/qwen-code@latest
 # pi.dev
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+RUN pi install npm:pi-web-access
+RUN pi install npm:@narumitw/pi-chrome-devtools
 
 # =============================================================================
 # CONFIGURE DESKTOP ENVIRONMENT
