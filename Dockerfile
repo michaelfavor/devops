@@ -153,6 +153,10 @@ RUN npm install -g @qwen-code/qwen-code@latest
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 RUN pi install npm:pi-web-access
 RUN pi install npm:@narumitw/pi-chrome-devtools
+# Chrome for use by pi-chrome-devtools
+RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \                                                                                                                                                                                                
+    && apt-get install -y /tmp/chrome.deb \                                                                                                                                                                                                                                                               
+    && rm /tmp/chrome.deb
 
 # =============================================================================
 # CONFIGURE DESKTOP ENVIRONMENT
