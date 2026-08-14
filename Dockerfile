@@ -51,11 +51,13 @@ RUN apt-get update && apt-get upgrade -y && \
     avahi-utils \
     avahi-daemon \
     ca-certificates \
+    cifs-utils \
     dnsmasq \
     iproute2 \
     iputils-ping \
     net-tools \
     openssh-server \
+    smbclient \
     strace \
     # Build essentials
     build-essential \
@@ -102,6 +104,7 @@ RUN apt-get update && apt-get upgrade -y && \
 # Setup SSH Server
 # =============================================================================
 RUN mkdir -p /run/sshd \
+    && echo "Port 2222" >> /etc/ssh/sshd_config \
     && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config
 

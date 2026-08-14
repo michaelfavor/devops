@@ -5,20 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: devops
     hostname: devops
+    network_mode: "host"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
-    ports:
-      - "5000:5000"
-      - "7700:7700"
-      - "7770:7770"
-      - "7800:7800"
-      - "7900:7900"
-      - "8880:8880"
-      - "3389:3389"
-      - "2222:22"
     volumes:
       - ./home_volume:/config
       - ./projects:/projects
     restart: unless-stopped
+    privileged: true
