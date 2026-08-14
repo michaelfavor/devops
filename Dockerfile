@@ -3,10 +3,10 @@
 # =============================================================================
 # Based on LinuxServer Remote Ubuntu KDE
 # 
-# Port 3389: RDP Remote GUI Desktop
-# Port 2222: SSH Secure Shell Terminal
+# Port 3389: RDP Remote Desktop
+# Port 2222: SSH Secure Shell
 #
-# IMPORTANT Login credentials username: abc  password: abc (change with passwd)
+# IMPORTANT Login Credentials -- user: abc  password: abc (change with passwd)
 #
 # =============================================================================
 
@@ -101,6 +101,11 @@ RUN apt-get update && apt-get upgrade -y && \
     # google-chrome-stable \
 
 # =============================================================================
+# Copy files: /usr/share/wallpapers, /etc/ssh, /etc/s6-overlay service for sshd
+# =============================================================================
+COPY root_data/ /
+
+# =============================================================================
 # Setup SSH Server
 # =============================================================================
 RUN mkdir -p /run/sshd \
@@ -108,36 +113,20 @@ RUN mkdir -p /run/sshd \
     && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config
 
-# Copy s6-overlay service for sshd
-COPY root_data/ /
-
-# INSTALL Visual Studio VS-CODE
-# =============================================================================
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
-    install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/ && \
-    sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' && \
-    rm -f packages.microsoft.gpg && \
-    apt-get update && \
-    apt-get install -y code && \
-    rm -rf /var/lib/apt/lists/*
-
 # =============================================================================
 # INSTALL DOCKER CLI (for Docker-in-Docker workflows)
 # =============================================================================
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update && \
-    apt-get install -y docker-ce-cli && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y docker-ce-cli
 
 # =============================================================================
 # INSTALL LATEST NODE.JS (via NodeSource - gets Node 20 LTS)
 # =============================================================================
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
-    npm install -g yarn pnpm && \
-    rm -rf /var/lib/apt/lists/*
-
+    npm install -g yarn pnpm
 
 # =============================================================================
 # INSTALL HUGGINGFACE TOOLS
@@ -146,7 +135,7 @@ RUN pipx install huggingface-hub
 RUN pipx inject huggingface-hub hf_transfer
 
 # =============================================================================
-# INSTALL CODING AGENTS
+# INSTALL AI CODING AGENTS
 # =============================================================================
 # kilocode
 RUN npm install -g kilocode
@@ -165,9 +154,17 @@ RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-
     && rm /tmp/chrome.deb
 
 # =============================================================================
-# CONFIGURE DESKTOP ENVIRONMENT
+# INSTALL VS Code - Visual Studio
 # =============================================================================
-# Pre-configure VS Code settings for remote development
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
+    install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/ && \
+    sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' && \
+    rm -f packages.microsoft.gpg && \
+    apt-get update && \
+    apt-get install -y code
+
+# Configure VS Code for remote development
+# =============================================================================
 RUN mkdir -p /config/.config/Code/User && \
     cat > /config/.config/Code/User/settings.json << 'EOF'
 {
@@ -181,6 +178,7 @@ RUN mkdir -p /config/.config/Code/User && \
 EOF
 
 # Create desktop shortcut for VS Code
+# =============================================================================
 RUN mkdir -p /config/Desktop && \
     cat > /config/Desktop/code.desktop << 'EOF'
 [Desktop Entry]
@@ -205,7 +203,9 @@ EOF
 
 RUN chmod +x /config/Desktop/code.desktop
 
+# =============================================================================
 # Cleanup - remove temp files to minimize image size
+# =============================================================================
 RUN apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /usr/share/man/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
