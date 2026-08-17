@@ -43,7 +43,7 @@ docker compose up -d --build
 
 ### Screen Resolution
 
-RDP defaults to **1920x1080**. To change, edit `root_data/etc/X11/xrdp/xorg.conf` and reorder the `Modes` line in the Screen section — the first mode is preferred. Rebuild to apply.
+RDP resolution matches your RDP client window size. Connect fullscreen for maximum resolution.
 
 ### Networking
 
