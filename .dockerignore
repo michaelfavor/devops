@@ -1,0 +1,17 @@
+# Version control
+.git/
+
+# Data volumes (mounted at runtime, not needed in build)
+home_volume/
+projects/
+
+# Old/backup files
+rdesktop-kde/
+
+# Session logs
+sess/
+archive/
+
+# Test scripts (not needed in image)
+test-rdp.sh
+build.sh
