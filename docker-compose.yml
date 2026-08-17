@@ -1,10 +1,10 @@
 services:
-  kde-vm:
+  docker-desk:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: devops
-    hostname: devops
+    container_name: docker-desk
+    hostname: dock
     network_mode: "host"
     environment:
       - PUID=1000
