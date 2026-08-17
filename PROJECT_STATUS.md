@@ -13,7 +13,7 @@ docker compose up -d --build
 ## Access
 
 - **RDP:** Connect via RDP client to `localhost:3389`
-- **Credentials:** linuxserver.io / linuxserver.io
+- **Credentials:** abc / abc
 
 ## Files
 

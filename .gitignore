@@ -1,5 +1,6 @@
-_archive/
+archive/
 projects/
+sess/
 home_volume/.local/share/
 home_volume/.XDG/pulse/pid
 home_volume/.xorgxrdp.10.log

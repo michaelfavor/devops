@@ -101,7 +101,7 @@ RUN apt-get update && apt-get upgrade -y && \
     # google-chrome-stable \
 
 # =============================================================================
-# Copy files: /usr/share/wallpapers, /etc/ssh, /etc/s6-overlay service for sshd
+# Copy files: /usr/share/wallpapers, /etc/ssh, /etc/s6-overlay services (xrdp fixes, sshd), /etc/X11/xrdp (resolution)
 # =============================================================================
 COPY root_data/ /
 
@@ -122,7 +122,7 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     apt-get install -y docker-ce-cli
 
 # =============================================================================
-# INSTALL LATEST NODE.JS (via NodeSource - gets Node 20 LTS)
+# INSTALL LATEST NODE.JS (via NodeSource - gets Node 22 LTS)
 # =============================================================================
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
