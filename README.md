@@ -41,6 +41,20 @@ docker compose up -d --build
 
 ## Configuration
 
+### Seed Files
+
+Default config files are placed in `root_data/config/` and seeded into new containers at build time. Existing volume files are never overwritten.
+
+| File | Purpose |
+|------|---------|
+| `.tmux.conf` | Enables extended-keys support (`set -g extended-keys on`) |
+| `.bashrc` | Adds `~/.local/bin` to PATH, sets `COLORTERM=truecolor` for 256-color support |
+
+To modify, edit the file in `root_data/config/` and rebuild:
+```bash
+docker compose up -d --build
+```
+
 ### Screen Resolution
 
 RDP resolution matches your RDP client window size. Connect fullscreen for maximum resolution.
@@ -88,6 +102,7 @@ docker compose up -d --build --no-cache
 ├── docker-compose.yml      # Container configuration
 ├── build.sh                # Convenience rebuild script
 ├── root_data/              # Files copied into the image
+│   ├── config/             # Seed configs (.tmux.conf, .bashrc)
 │   ├── etc/X11/xrdp/       # xorg.conf (screen resolution)
 │   ├── etc/s6-overlay/     # Service overrides (xrdp, sshd)
 │   ├── etc/ssh/            # SSH host keys
