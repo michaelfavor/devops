@@ -13,5 +13,6 @@ services:
     volumes:
       - ./home_volume:/config
       - ./projects:/projects
+      - ./docker-desk-doctor:/usr/local/share/docker-desk-doctor
     restart: unless-stopped
     privileged: true

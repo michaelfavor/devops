@@ -23,6 +23,7 @@ docker compose up -d --build
 |-----------|----------------|---------|
 | `./home_volume/` | `/config` | User home directory (persists across rebuilds) |
 | `./projects/` | `/projects` | Project workspace |
+| `./docker-desk-doctor/` | `/usr/local/share/docker-desk-doctor/` | Self-heal script (live edits) |
 
 ## Included Software
 
@@ -30,14 +31,20 @@ docker compose up -d --build
 - **Editors/IDEs**: VS Code, vim, nano
 - **Languages**: Node.js 22 (npm, yarn, pnpm), Python 3 (pip, pipx, venv), Go, Java (default-jdk)
 - **AI Coding Agents**: [pi.dev](https://pi.dev), kilocode, opencode, qwen-code
+- **Browser Automation**: Playwright 1.61.0 (global) + Chromium browsers
 - **Version Control**: git, git-lfs
 - **Docker CLI**: For Docker-in-Docker workflows
 
 ### GUI Applications
 - Chromium, Firefox, GIMP, LibreOffice, VLC
 
-### System Utilities
-- htop, tmux, strace, net-tools, iproute2, avahi, CIFS/SMB clients
+### Self-Heal
+- **desk-doctor**: 13-check idempotent health script. Runs automatically at startup via s6-overlay. Verifies required binaries, pi packages, playwright, and seeds fresh home volumes.
+
+```bash
+docker exec -it docker-desk desk-doctor        # check + repair
+docker exec -it docker-desk desk-doctor --check # report only
+```
 
 ## Configuration
 
@@ -98,17 +105,21 @@ docker compose up -d --build --no-cache
 ## Project Structure
 
 ```
-├── Dockerfile              # Custom image build
-├── docker-compose.yml      # Container configuration
-├── build.sh                # Convenience rebuild script
-├── root_data/              # Files copied into the image
-│   ├── config/             # Seed configs (.tmux.conf, .bashrc)
-│   ├── etc/X11/xrdp/       # xorg.conf (screen resolution)
-│   ├── etc/s6-overlay/     # Service overrides (xrdp, sshd)
-│   ├── etc/ssh/            # SSH host keys
+├── Dockerfile                    # Custom image build
+├── docker-compose.yml            # Container configuration
+├── build.sh                      # Convenience rebuild script
+├── PROJECT_LOG.md                # Decision log and learnings
+├── docker-desk-doctor/           # Self-heal script (bind-mounted live)
+│   ├── desk-doctor.sh            # Main script
+│   └── defaults/                 # Default config files
+├── root_data/                    # Files copied into the image
+│   ├── config/                   # Seed configs (.tmux.conf, .bashrc)
+│   ├── etc/X11/xrdp/             # xorg.conf (screen resolution)
+│   ├── etc/s6-overlay/           # Service overrides (xrdp, sshd, desk-doctor)
+│   ├── etc/ssh/                  # SSH host keys
 │   └── usr/share/wallpapers/
-├── home_volume/            # Persisted user home (/config)
-└── projects/               # Persisted workspace (/projects)
+├── home_volume/                  # Persisted user home (/config)
+└── projects/                     # Persisted workspace (/projects)
 ```
 
 ## Base Image

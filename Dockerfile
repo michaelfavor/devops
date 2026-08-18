@@ -145,9 +145,11 @@ RUN npm install -g opencode-ai
 # qwencode
 RUN npm install -g @qwen-code/qwen-code@latest
 # pi.dev
+# NOTE: pi packages are NOT installed here. Build runs as root (HOME=/root),
+# so they would land in /root/.pi which the runtime user never sees, and
+# /config is bind-mounted at runtime anyway. desk-doctor installs them on
+# demand at startup (s6 one-shot task).
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-RUN pi install npm:pi-web-access
-RUN pi install npm:@narumitw/pi-chrome-devtools
 # Chrome for use by pi-chrome-devtools
 RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \                                                                                                                                                                                                
     && apt-get install -y /tmp/chrome.deb \                                                                                                                                                                                                                                                               
@@ -202,6 +204,25 @@ Icon=vscode
 EOF
 
 RUN chmod +x /config/Desktop/code.desktop
+
+# =============================================================================
+# BATTERIES: global playwright (system site, not user site) + chromium
+# =============================================================================
+# --no-user matters: pip defaults to user site (~/.local) which would land
+# under /config and be shadowed by the runtime bind mount.
+RUN python3 -m pip install --break-system-packages --no-user --no-cache-dir "playwright==1.61.0" \
+ && python3 -m playwright install chromium
+
+# =============================================================================
+# SEED SNAPSHOT: copy /config defaults to an unshadowed path
+# =============================================================================
+# /config is bind-mounted at runtime, hiding the image's /config.
+# Snapshot it here so desk-doctor can seed a fresh home_volume.
+# Must run AFTER everything that writes to /config above.
+RUN mkdir -p /usr/share/docker-desk/seed-config && cp -a /config/. /usr/share/docker-desk/seed-config/
+
+# Convenience symlink — points to bind mount so edits are picked up live.
+RUN ln -s /usr/local/share/docker-desk-doctor/desk-doctor.sh /usr/local/bin/desk-doctor
 
 # =============================================================================
 # Cleanup - remove temp files to minimize image size
