@@ -58,9 +58,11 @@ RUN apt-get update && apt-get upgrade -y && \
     net-tools \
     openssh-server \
     smbclient \
+    socat \
     strace \
     # Build essentials
     build-essential \
+    cmake \
     curl \
     wget \
     git \
@@ -96,6 +98,8 @@ RUN apt-get update && apt-get upgrade -y && \
     libreoffice \
     vlc \
     xterm
+
+RUN apt-get install -y nvidia-cuda-toolkit
 
 #RUN apt-get install -y --no-install-recommends \
     # google-chrome-stable \
@@ -205,11 +209,14 @@ EOF
 
 RUN chmod +x /config/Desktop/code.desktop
 
+RUN pip install --no-user --break-system-packages pexpect fastapi uvicorn zstandard
+
 # =============================================================================
 # BATTERIES: global playwright (system site, not user site) + chromium
 # =============================================================================
 # --no-user matters: pip defaults to user site (~/.local) which would land
 # under /config and be shadowed by the runtime bind mount.
+RUN python3 -m pip install --break-system-packages --no-user --no-cache-dir pexpect fastapi uvicorn zstandard
 RUN python3 -m pip install --break-system-packages --no-user --no-cache-dir "playwright==1.61.0" \
  && python3 -m playwright install chromium
 
@@ -223,6 +230,14 @@ RUN mkdir -p /usr/share/docker-desk/seed-config && cp -a /config/. /usr/share/do
 
 # Convenience symlink — points to bind mount so edits are picked up live.
 RUN ln -s /usr/local/share/docker-desk-doctor/desk-doctor.sh /usr/local/bin/desk-doctor
+
+# =============================================================================
+# Ensure hostname resolves in /etc/hosts (needed for host networking mode)
+# In host mode, /etc/hosts is shared with the host — Docker does not inject
+# the container's hostname automatically, so sudo/other tools that do
+# hostname lookups will hang until they timeout.
+# =============================================================================
+#RUN echo "127.0.1.1 dock" >> /etc/hosts
 
 # =============================================================================
 # Cleanup - remove temp files to minimize image size
