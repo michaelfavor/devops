@@ -42,6 +42,7 @@ RUN apt-get update && apt-get upgrade -y && \
     members \
     neofetch \
     nano \
+    rsync \
     supervisor \
     tmux \
     vim \
