@@ -35,7 +35,8 @@ RUN yes | /usr/bin/unminimize
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     # System utilities
-    gpg \
+    curl \
+    git \
     htop \
     lsof \
     less \
@@ -43,10 +44,13 @@ RUN apt-get update && apt-get upgrade -y && \
     neofetch \
     nano \
     rsync \
+    ssh \
+    sqlite3 \
     supervisor \
     tmux \
-    vim \
     unzip \
+    vim \
+    wget \
     zip \
     # Network essentials
     avahi-utils \
@@ -58,18 +62,16 @@ RUN apt-get update && apt-get upgrade -y && \
     iputils-ping \
     net-tools \
     openssh-server \
-    smbclient \
+    gpg \
     socat \
     strace \
+    smbclient \
     # Build essentials
     build-essential \
     cmake \
-    curl \
-    wget \
-    git \
+    flake8 \
     git-lfs \
     golang-go \
-    ssh \
     libnccl2 \
     libnccl-dev \
     libnss-mdns \
