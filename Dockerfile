@@ -38,6 +38,7 @@ RUN apt-get update && apt-get upgrade -y && \
     curl \
     git \
     htop \
+    imagemagick \
     lsof \
     less \
     members \
@@ -76,6 +77,7 @@ RUN apt-get update && apt-get upgrade -y && \
     libnccl-dev \
     libnss-mdns \
     # Python ecosystem
+    pylint \
     python3 \
     python3-pip \
     python3-venv \
