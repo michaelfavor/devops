@@ -1,6 +1,6 @@
 archive/
 projects/
-sess/
+home_volume/
 home_volume/.local/share/
 home_volume/.XDG/pulse/pid
 home_volume/.xorgxrdp.10.log
@@ -12,4 +12,3 @@ home_volume/.sudo_as_admin_successful
 home_volume/.xorgxrdp.10.log.old
 home_volume/.ssh/known_hosts
 home_volume/.ssh/known_hosts.old
-home_volume/
