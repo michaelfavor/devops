@@ -214,7 +214,7 @@ EOF
 
 RUN chmod +x /config/Desktop/code.desktop
 
-RUN pip install --no-user --break-system-packages pexpect fastapi uvicorn zstandard
+RUN apt-get remove -y python3-typing-extensions  # conflicts with python's pip
 
 # =============================================================================
 # BATTERIES: global playwright (system site, not user site) + chromium
