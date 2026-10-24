@@ -1,9 +1,9 @@
 #!/bin/bash
-# permissions must be set to 600 on ssh files
-cd root_data/etc/ssh                                                                                                                                                                                                                                                    
-chmod 600 ssh_host_ecdsa_key ssh_host_ed25519_key ssh_host_rsa_key
-cd ../../..
-# build docker container
+# ssh file permissions must be 600
+chmod 600 root_data/etc/ssh/ssh*
+# rebuild docker container
+docker stop docker-desk
+docker rm docker-desk
 docker compose down
 docker compose up -d --build
 
